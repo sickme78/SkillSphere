@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ p.title }} · SkillSphere AI{% endblock %}
+{% block content %}
+<p class="crumb"><a class="quiet" href="{{ url_for('learning.problem_list') }}">&larr; All problems</a></p>
+<header class="page-head">
+  <p class="eyebrow">{% if is_daily %}Problem of the Day{% else %}Practice problem{% endif %}</p>
+  <h1>{{ p.title }}</h1>
+  <p class="meta-line"><span class="tag {{ p.difficulty|lower }}">{{ p.difficulty }}</span>
+    {{ p.domain }} · {{ p.topic }} · +{{ p.xp_reward if is_daily else 25 }} XP</p>
+</header>
+
+<section class="block prose">
+  <h2>The task</h2>
+  <p>{{ p.description }}</p>
+  {% if p.example_input %}
+  <div class="example">
+    <p class="ex-label">Example input</p><pre>{{ p.example_input }}</pre>
+    <p class="ex-label">Expected output</p><pre>{{ p.example_output }}</pre>
+  </div>
+  {% endif %}
+  {% if p.constraints %}<p class="fine">Constraints: {{ p.constraints }}</p>{% endif %}
+</section>
+
+{% if p.hints %}
+<section class="block">
+  <h2>Hints</h2>
+  <ol class="hints" data-hints>
+    {% for h in p.hints %}<li hidden>{{ h }}</li>{% endfor %}
+  </ol>
+  <button type="button" class="btn ghost small" id="hint-btn" data-total="{{ p.hints|length }}">Show a hint</button>
+</section>
+{% endif %}
+
+<section class="block">
+  <h2>Solution</h2>
+  <details class="solution">
+    <summary>Show solution and explanation</summary>
+    <p>{{ p.solution }}</p>
+    {% if p.solution_code %}<pre>{{ p.solution_code }}</pre>{% endif %}
+  </details>
+</section>
+
+<div class="next-step">
+  {% if solved %}
+    <span class="done-tag">Solved</span>
+    <a class="btn ghost" href="{{ url_for('learning.problem_list') }}">More problems</a>
+  {% else %}
+    <form method="post" action="{{ url_for('learning.solve', problem_id=p.id) }}">
+      <button class="btn" type="submit">I solved it</button>
+    </form>
+    <p class="fine inline">Problems are self-checked — try it yourself first, then compare with the solution.</p>
+  {% endif %}
+</div>
+{% endblock %}

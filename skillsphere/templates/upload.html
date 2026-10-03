@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}AI quiz generator · SkillSphere AI{% endblock %}
+{% block content %}
+<header class="page-head">
+  <p class="eyebrow">AI quiz generator</p>
+  <h1>Turn your study material into a quiz</h1>
+  <p class="lede">Upload any study material - DBMS notes, an OS chapter, a slide deck, anything
+    teachable. Gemini writes the questions from <em>your</em> document, with explanations.</p>
+</header>
+
+{% if skill %}<p class="notice soft">Quiz focus: <strong>{{ skill }}</strong>. Upload your {{ skill }} notes or slides and the quiz will be built from them.</p>{% endif %}
+{% if not key_ready %}
+<p class="notice">AI quiz generation is unavailable because the Gemini API key has not been configured.
+  Add GEMINI_API_KEY to your <code>.env</code> file. You can still run the demo quiz on purpose.</p>
+{% endif %}
+
+<form class="dropzone" method="post" enctype="multipart/form-data">
+  <input type="file" name="material" id="material" accept=".pdf,.pptx,.ppt,.txt">
+  <label for="material" class="drop-face">
+    <strong id="filename">Choose a PDF, PPTX or TXT file</strong>
+    <span>Up to 10 MB. Long documents are sampled across all sections.</span>
+  </label>
+  <div class="drop-actions">
+    <button class="btn" type="submit" id="genbtn">Generate quiz</button>
+    <button class="btn ghost" type="submit" name="demo" value="1" formnovalidate>Run demo quiz</button>
+  </div>
+</form>
+
+<section class="block">
+  <h2>What happens to your file</h2>
+  <ol class="steps">
+    <li>Saved to the <code>uploads/</code> folder on your machine.</li>
+    <li>All of its text is extracted with pypdf or python-pptx.</li>
+    <li>Short documents are sent whole. Long ones are split into sections and a spread from the
+      beginning, middle and end is sent, so the quiz covers the whole document.</li>
+    <li>Gemini writes questions only from that text. If anything fails you see a clear message -
+      unrelated demo questions are never substituted. The JavaScript demo quiz runs only when you ask for it.</li>
+  </ol>
+</section>
+{% endblock %}

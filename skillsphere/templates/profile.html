@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Profile · SkillSphere AI{% endblock %}
+{% block content %}
+<header class="page-head">
+  <h1>Your profile</h1>
+  <p class="lede">This is what the skill gap analysis is built from. List the skills you already have —
+    write <em>Basic JavaScript</em> if you only know a little.</p>
+</header>
+
+<form method="post" class="form">
+  <div class="field-row">
+    <label>Name<input name="name" value="{{ form.name or '' }}" required placeholder="Radhika Jha"></label>
+    <label>Email<input type="email" name="email" value="{{ form.email or '' }}" required placeholder="radhika@example.com"></label>
+  </div>
+  <div class="field-row">
+    <label>Education<input name="education" value="{{ form.education or '' }}" placeholder="B.Tech CSE, 2nd year"></label>
+    <label>Experience<input name="experience" value="{{ form.experience or '' }}" placeholder="Fresher, 2 college projects"></label>
+  </div>
+
+  <label class="field">Target role
+    <select name="target_role" required>
+      <option value="">Choose a role</option>
+      {% for role in roles %}
+      <option value="{{ role }}" {{ 'selected' if form.target_role == role }}>{{ role }}</option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <label class="field">Current skills
+    <textarea name="current_skills" rows="3" placeholder="HTML, CSS, Basic JavaScript">{{ form.current_skills or '' }}</textarea>
+    <span class="hint">Comma separated. Prefix with Basic or Intermediate to mark a partial skill.</span>
+  </label>
+
+  <label class="field">Learning goal
+    <textarea name="learning_goal" rows="2" placeholder="Become job-ready as a frontend developer.">{{ form.learning_goal or '' }}</textarea>
+  </label>
+
+  <div class="form-foot">
+    <button class="btn" type="submit">Analyse my skills</button>
+    <a class="quiet" href="{{ url_for('demo_login') }}">Or load the demo profile</a>
+  </div>
+</form>
+{% endblock %}

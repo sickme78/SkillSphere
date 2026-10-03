@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Problems · SkillSphere AI{% endblock %}
+{% block content %}
+<header class="page-head">
+  <p class="eyebrow">Practice</p>
+  <h1>Problems</h1>
+  <p class="lede">Short exercises across DSA, languages, SQL and web development. Solve one to earn XP.</p>
+</header>
+
+{% if today %}
+<section class="potd-strip">
+  <div>
+    <p class="eyebrow">Problem of the Day</p>
+    <h2>{{ today.title }}</h2>
+    <p class="meta-line">{{ today.difficulty }} · {{ today.topic }} · +{{ today.xp_reward }} XP</p>
+  </div>
+  {% if today_solved %}<span class="done-tag">Solved today</span>
+  {% else %}<a class="btn" href="{{ url_for('learning.problem', problem_id=today.id) }}">Start problem</a>{% endif %}
+</section>
+{% endif %}
+
+<nav class="filters" aria-label="Filter by domain">
+  <a class="{{ 'on' if not domain }}" href="{{ url_for('learning.problem_list') }}">All</a>
+  {% for d in domains %}<a class="{{ 'on' if d == domain }}" href="{{ url_for('learning.problem_list', domain=d) }}">{{ d }}</a>{% endfor %}
+</nav>
+
+<ul class="problem-list">
+  {% for r in rows %}
+  <li>
+    <a href="{{ url_for('learning.problem', problem_id=r.id) }}">
+      <span class="p-title">{{ r.title }}</span>
+      <span class="p-meta">{{ r.domain }} · {{ r.topic }}</span>
+      <span class="tag {{ r.difficulty|lower }}">{{ r.difficulty }}</span>
+      <span class="p-state">{% if r.solved %}Solved{% else %}+{{ r.xp_reward }} XP{% endif %}</span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Skill gaps · SkillSphere AI{% endblock %}
+{% block content %}
+<header class="page-head split">
+  <div>
+    <p class="eyebrow">Initial skill gap analysis · rule-based</p>
+    <h1>{{ a.role }}</h1>
+  </div>
+  <div class="readiness" data-target="{{ a.readiness }}">
+    <span class="r-num">0%</span>
+    <span class="r-label">role readiness</span>
+  </div>
+</header>
+
+<section class="block">
+  <h2>Your current level</h2>
+  <ul class="skillmap large">
+    {% for row in a.rows %}
+    <li>
+      <span class="s-name">{{ row.skill }}</span>
+      <span class="bar"><i data-width="{{ row.level }}"></i></span>
+      <span class="s-val">{{ row.level }}%</span>
+    </li>
+    {% endfor %}
+  </ul>
+  <p class="tally">
+    <strong>{{ a.matched|length }}</strong> matched ·
+    <strong>{{ a.partial|length }}</strong> in progress ·
+    <strong>{{ a.missing|length }}</strong> not started
+  </p>
+</section>
+
+{% if a.focus %}
+<section class="block">
+  <h2>Your next focus</h2>
+  <ol class="focus-list">
+    {% for skill in a.focus %}
+    {% set rec = a.recommendations | selectattr('skill','equalto',skill) | first %}
+    <li>
+      <span class="idx">{{ '%02d' % loop.index }}</span>
+      <div>
+        <h3>{{ skill }}</h3>
+        <p>{{ rec.focus if rec else 'Core concepts' }}</p>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endif %}
+
+<div class="next-step"><a class="btn" href="{{ url_for('recommendations') }}">See my learning path</a></div>
+{% endblock %}

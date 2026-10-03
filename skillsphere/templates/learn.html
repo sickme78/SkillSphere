@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Learn {{ skill }} · SkillSphere AI{% endblock %}
+{% block content %}
+<p class="crumb"><a class="quiet" href="{{ url_for('recommendations') }}">&larr; Learning path</a></p>
+<header class="page-head split">
+  <div>
+    <p class="eyebrow">Learning task · {{ rec.difficulty }}</p>
+    <h1>{{ skill }}</h1>
+    <p class="lede">{{ rec.description }}</p>
+  </div>
+  <div class="readiness"><span class="r-num">{{ level }}%</span><span class="r-label">your level for {{ a.role }}</span></div>
+</header>
+
+<section class="block">
+  <h2>What to cover</h2>
+  <ul class="checklist">
+    {% for item in focus_items %}<li>{{ item }}</li>{% endfor %}
+  </ul>
+  <p class="fine">Work through these using your own course material or documentation, then test yourself below.</p>
+</section>
+
+<section class="block">
+  <h2>Practise and check yourself</h2>
+  <div class="action-row">
+    {% if practice_id %}<a class="btn" href="{{ url_for('learning.problem', problem_id=practice_id) }}">Practice problem</a>
+    {% else %}<a class="btn" href="{{ url_for('learning.problem_list') }}">Browse problems</a>{% endif %}
+    <a class="btn ghost" href="{{ url_for('upload', skill=skill) }}">Take a quiz on {{ skill }}</a>
+  </div>
+</section>
+
+<section class="block">
+  <h2>Finished learning it?</h2>
+  {% if task_done %}
+    <p><span class="done-tag">Completed</span> You marked {{ skill }} as learned.</p>
+  {% else %}
+    <p class="lede">Mark this skill as learned to earn +75 XP and update your readiness. Be honest — a quiz
+      afterwards will show whether it stuck.</p>
+    <form method="post" action="{{ url_for('learning.learn_complete', skill=skill) }}">
+      <button class="btn" type="submit">Mark {{ skill }} as learned</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · SkillSphere AI{% endblock %}
+{% block content %}
+<header class="page-head split">
+  <div>
+    <p class="eyebrow">Welcome back</p>
+    <h1>{{ greeting }}, {{ profile.name.split()[0] }}.</h1>
+    <p class="lede">Target role: <strong>{{ a.role }}</strong></p>
+  </div>
+  <div class="readiness" data-target="{{ a.readiness }}">
+    <span class="r-num">0%</span><span class="r-label">skill readiness</span>
+  </div>
+</header>
+
+{# ---------- next step (recommendation) ---------- #}
+<section class="next-best">
+  <p class="eyebrow">Recommended next</p>
+  <h2>{{ rec.headline }}</h2>
+  <p>{{ rec.reason }}</p>
+  <div class="action-row">
+    {% for act in rec.actions %}<a class="btn {{ '' if act.primary else 'ghost' }}" href="{{ act.url }}">{{ act.label }}</a>{% endfor %}
+  </div>
+</section>
+
+{# ---------- today + progress ---------- #}
+<section class="two-col tight">
+  <div class="card potd">
+    <p class="eyebrow">Problem of the Day</p>
+    {% if problem %}
+      <h3>{{ problem.title }}</h3>
+      <p class="meta-line"><span class="tag {{ problem.difficulty|lower }}">{{ problem.difficulty }}</span>
+        {{ problem.topic }} · {{ problem.domain }} · +{{ problem.xp_reward }} XP</p>
+      {% if problem_solved %}<p><span class="done-tag">Completed today</span></p>
+        <a class="btn ghost small" href="{{ url_for('learning.problem', problem_id=problem.id) }}">Review</a>
+      {% else %}<a class="btn" href="{{ url_for('learning.problem', problem_id=problem.id) }}">Start problem</a>{% endif %}
+    {% else %}<p class="empty">No problems available yet.</p>{% endif %}
+  </div>
+
+  <div class="card progress-card">
+    <p class="eyebrow">Your progress</p>
+    <h3>Level {{ gam.level }} — {{ gam.level_name }}</h3>
+    <span class="bar thick"><i data-width="{{ gam.percent }}"></i></span>
+    <p class="xp-line"><strong>{{ gam.xp }}</strong>{% if gam.next_name %} / {{ gam.next_target }} XP · next: {{ gam.next_name }}{% else %} XP · top level{% endif %}</p>
+    <p class="streak-line">
+      {% if gam.streak %}🔥 <strong>{{ gam.streak }}</strong> day streak{% if not gam.active_today %} — learn something today to keep it{% endif %}
+      {% else %}No active streak — solve a problem or finish a quiz to start one{% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="stat-strip">
+  <div><span class="stat">{{ a.matched|length }}</span><span class="stat-label">skills matched</span></div>
+  <div><span class="stat">{{ a.partial|length + a.missing|length }}</span><span class="stat-label">skill gaps</span></div>
+  <div><span class="stat">{{ quiz_count }}</span><span class="stat-label">quizzes completed</span></div>
+  <div><span class="stat">{{ avg ~ '%' if avg is not none else '—' }}</span><span class="stat-label">average score</span></div>
+</section>
+
+<section class="two-col">
+  <div>
+    <h2>Skill gaps</h2>
+    {% if a.focus %}
+    <ul class="skillmap">
+      {% for row in a.rows if row.level < 100 %}
+      <li>
+        <a class="s-name gap-link" href="{{ url_for('learning.learn', skill=row.skill) }}">{{ row.skill }}</a>
+        <span class="bar"><i data-width="{{ row.level }}"></i></span>
+        <span class="s-val">{{ row.level }}%</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <a class="btn ghost small spaced-btn" href="{{ url_for('recommendations') }}">Continue learning</a>
+    {% else %}<p class="empty">No gaps left for {{ a.role }}.</p>{% endif %}
+  </div>
+  <div>
+    <h2>Recent quiz performance</h2>
+    {% if recent_scores %}
+    <ul class="skillmap">
+      {% for subject, pct in recent_scores %}
+      <li><span class="s-name">{{ subject }}</span><span class="bar"><i data-width="{{ pct }}"></i></span><span class="s-val">{{ pct }}%</span></li>
+      {% endfor %}
+    </ul>
+    {% if weak %}<p class="fine">Revisit: {{ weak|map(attribute=0)|join(', ') }}</p>{% endif %}
+    {% else %}
+    <p class="empty">No quizzes yet. <a href="{{ url_for('upload') }}">Upload material</a> to generate one.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="two-col">
+  <div>
+    <h2>Recent activity</h2>
+    {% if feed %}
+    <ul class="activity">
+      {% for f in feed %}
+      <li>
+        <span class="a-title">{{ f.title }}</span>
+        <span class="a-meta">{{ f.meta }}{% if f.xp %} · +{{ f.xp }} XP{% endif %} · {{ f.when.strftime('%d %b') }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="empty">Nothing yet — your first quiz or problem will show up here.</p>{% endif %}
+  </div>
+  <div>
+    <h2>Badges <span class="count">{{ gam.badge_count }} / {{ badges|length }}</span></h2>
+    <ul class="badge-shelf">
+      {% for b in badges %}
+      <li class="{{ 'earned' if b.earned else 'locked' }}" title="{{ b.description }}">
+        <span class="glyph">{{ b.glyph }}</span><span class="b-name">{{ b.name }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

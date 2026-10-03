@@ -1,0 +1,64 @@
+JavaScript Fundamentals - Study Notes
+
+1. What JavaScript is
+JavaScript is the programming language of the browser. HTML describes the structure of a page
+and CSS describes its appearance, while JavaScript describes its behaviour: what happens when a
+user clicks, types, scrolls or submits a form. Modern JavaScript also runs outside the browser
+on servers through Node.js.
+
+2. Variables
+There are three ways to declare a variable. var is the oldest form and is function-scoped, which
+often surprises beginners. let declares a block-scoped variable that can be reassigned. const also
+declares a block-scoped variable, but the binding cannot be reassigned after it is created. An
+object declared with const can still have its properties changed; only the binding is fixed.
+
+3. Data types and coercion
+JavaScript has seven primitive types: string, number, boolean, null, undefined, symbol and bigint.
+Everything else is an object, including arrays and functions. JavaScript converts types
+automatically in many expressions, which is called coercion. For example, the expression '5' + 3
+produces the string '53' because the plus operator prefers string concatenation when one operand
+is a string. The expression '5' - 3 produces the number 2 because the minus operator only works on
+numbers. Use === instead of == to compare without coercion.
+
+4. Functions
+A function is a reusable block of code. A function declaration is hoisted, meaning it can be called
+before it appears in the file. A function expression assigned to a const is not hoisted in the same
+way. Arrow functions, written as (a, b) => a + b, are shorter and do not bind their own this value,
+which makes them convenient as callbacks.
+
+5. The DOM
+The Document Object Model is a tree of objects that the browser builds from the HTML document.
+Each element becomes a node that JavaScript can read and change. document.querySelector finds the
+first element matching a CSS selector, and textContent or classList can then be used to update it.
+Changing the DOM changes what the user sees immediately, without reloading the page.
+
+6. Events
+An event is something that happens in the page, such as a click, a keypress or a form submission.
+addEventListener registers a handler function that runs when a named event occurs on an element.
+The handler receives an event object with details such as which element was the target.
+event.preventDefault() stops the browser's default behaviour, which is commonly used to stop a
+form from reloading the page.
+
+7. Arrays and iteration
+Arrays store ordered lists. The most useful methods are map, which returns a new array with each
+item transformed, filter, which returns a new array with only the items that pass a test, and
+reduce, which collapses an array into a single value. These methods do not modify the original
+array, which makes code easier to reason about.
+
+8. Asynchronous JavaScript
+JavaScript runs on a single thread, so slow work such as a network request must be asynchronous.
+A Promise represents a value that will be available later. fetch returns a Promise for an HTTP
+response. The async and await keywords let asynchronous code be written in a sequential style:
+await pauses inside an async function until the Promise settles, without blocking the rest of the
+page. Errors from awaited calls are caught with try and catch.
+
+9. JSON
+JSON is a text format for structured data and is how browsers and servers usually exchange
+information. JSON.stringify converts a JavaScript value into a JSON string, and JSON.parse turns a
+JSON string back into a JavaScript value. A fetch response has a .json() method that reads the
+body and parses it.
+
+10. Common beginner mistakes
+Comparing with == instead of ===, forgetting that array methods like map return a new array
+instead of changing the original, assuming code after an asynchronous call has already finished,
+and querying the DOM before the elements exist in the page.

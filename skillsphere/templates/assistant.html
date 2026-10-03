@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Assistant · SkillSphere AI{% endblock %}
+{% block content %}
+<header class="page-head">
+  <p class="eyebrow">SkillSphere Assistant</p>
+  <h1>Ask about your learning</h1>
+  <p class="lede">Answers use your target role ({{ profile.target_role }}), skill gaps, quiz results and progress —
+    not a generic chatbot. It is a coach, so it will steer unrelated questions back to learning.</p>
+</header>
+<div class="chat-page">{% include "_chat.html" %}</div>
+{% endblock %}

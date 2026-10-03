@@ -1,0 +1,13 @@
+{# Shared chat panel: used in the floating drawer and on the Assistant page. #}
+<div class="chat" data-endpoint="{{ url_for('assistant.chat') }}">
+  <div class="chat-log" aria-live="polite">
+    <div class="msg bot"><p>Hi {{ profile.name.split()[0] }} — I can see your target role, skill gaps and quiz results.
+      Ask me what to learn next, to explain a concept, or to review a quiz question.</p></div>
+  </div>
+  {% set chip_list = chips or ['What should I learn next?', 'Give me a practice problem', 'What should I revise?'] %}
+  <div class="chips">{% for c in chip_list %}<button type="button" class="chip">{{ c }}</button>{% endfor %}</div>
+  <form class="chat-form" autocomplete="off">
+    <textarea rows="1" maxlength="1500" placeholder="Ask about your skills or a concept…" aria-label="Your message"></textarea>
+    <button class="btn small" type="submit">Send</button>
+  </form>
+</div>

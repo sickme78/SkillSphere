@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Learning path · SkillSphere AI{% endblock %}
+{% block content %}
+<header class="page-head">
+  <p class="eyebrow">Personalised learning path</p>
+  <h1>Close the gap for {{ a.role }}</h1>
+  <p class="lede">Ordered by how much it moves your readiness. Work down the list.</p>
+</header>
+
+{% if a.recommendations %}
+<div class="rec-list">
+  {% for r in a.recommendations %}
+  <article class="rec">
+    <header>
+      <h3>{{ r.skill }}</h3>
+      <span class="tag {{ r.difficulty|lower }}">{{ r.difficulty }}</span>
+    </header>
+    <p class="rec-desc">{{ r.description }}</p>
+    <p class="rec-focus">{{ r.focus }}</p>
+    <div class="action-row compact">
+      <a class="btn ghost small" href="{{ url_for('learning.learn', skill=r.skill) }}">Learn {{ r.skill }}</a>
+      <a class="btn ghost small" href="{{ url_for('upload', skill=r.skill) }}">Take quiz</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<p class="empty">No gaps found for this role. Pick a harder target role, or upload material and test yourself.</p>
+{% endif %}
+
+<div class="next-step"><a class="btn" href="{{ url_for('upload') }}">Turn my material into a quiz</a></div>
+{% endblock %}

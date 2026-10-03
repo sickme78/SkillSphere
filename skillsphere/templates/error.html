@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} · SkillSphere AI{% endblock %}
+{% block content %}
+<header class="page-head">
+  <p class="eyebrow">Error {{ code }}</p>
+  <h1>{{ message }}</h1>
+  <div class="cta-row"><a class="btn" href="{{ url_for('index') }}">Back to home</a></div>
+</header>
+{% endblock %}

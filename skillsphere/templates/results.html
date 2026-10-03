@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Results · SkillSphere AI{% endblock %}
+{% block content %}
+<header class="page-head result-head">
+  <p class="eyebrow">Quiz complete · {{ r.title }}</p>
+  <p class="big-score">{{ r.score }}<span>/ {{ r.total }}</span></p>
+  <p class="percent">{{ percent }}%</p>
+  <p class="lede">{{ verdict }}</p>
+</header>
+
+<section class="two-col">
+  <div>
+    <h2>What you know</h2>
+    {% if known %}<ul class="plain">{% for t in known %}<li>{{ t }}</li>{% endfor %}</ul>
+    {% else %}<p class="empty">Nothing landed this time — worth a second pass.</p>{% endif %}
+  </div>
+  <div>
+    <h2>What to revisit</h2>
+    {% if revisit %}<ul class="plain warn">{% for t in revisit %}<li>{{ t }}</li>{% endfor %}</ul>
+    {% else %}<p class="empty">Nothing to revisit. Full marks.</p>{% endif %}
+  </div>
+</section>
+
+<section class="block">
+  <h2>Question review</h2>
+  {% for item in r.review %}
+  <article class="review {{ 'ok' if item.is_correct else 'bad' }}">
+    <p class="verdict">{{ 'Correct' if item.is_correct else 'Incorrect' }} · {{ item.topic }}</p>
+    <h3>{{ item.question }}</h3>
+    <p class="answers">
+      Your answer: <strong>{{ item.user_answer }}</strong>
+      {% if not item.is_correct %} · Correct answer: <strong>{{ item.correct_answer }}</strong>{% endif %}
+      — {{ item.options[item.correct_answer] }}
+    </p>
+    {% if item.explanation %}<p class="explain">{{ item.explanation }}</p>{% endif %}
+    <button type="button" class="linkish ask-about"
+      data-prompt="Explain this quiz question to me. Question: {{ item.question|e }} Options: {% for k, v in item.options.items() %}{{ k }}) {{ v|e }} {% endfor %}Correct answer: {{ item.correct_answer }}. {% if not item.is_correct %}I answered {{ item.user_answer }}. {% endif %}Why is the correct answer right?">Ask SkillSphere about this</button>
+  </article>
+  {% endfor %}
+</section>
+
+{% if rec %}
+<section class="next-best">
+  <p class="eyebrow">What next</p>
+  <h2>{{ rec.headline }}</h2>
+  <p>{{ rec.reason }}</p>
+  <div class="action-row">
+    {% for act in rec.actions %}<a class="btn {{ '' if act.primary else 'ghost' }}" href="{{ act.url }}">{{ act.label }}</a>{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<div class="next-step">
+  <a class="btn" href="{{ url_for('dashboard') }}">See my dashboard</a>
+  <a class="btn ghost" href="{{ url_for('upload') }}">Generate another quiz</a>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block bodyclass %}landing{% endblock %}
+{% block chrome %}
+<header class="top">
+  <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark"></span><span>SkillSphere<em>AI</em></span></a>
+  <nav class="top-nav">
+    <a href="{{ url_for('skill_gap') }}">Skill gaps</a>
+    <a href="{{ url_for('upload') }}">AI quiz</a>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a class="btn ghost small" href="{{ url_for('demo_login') }}">Log in as demo user</a>
+  </nav>
+</header>
+{% endblock %}
+{% block mainclass %}landing-main{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">AI-powered skill intelligence</p>
+    <h1>Know what you know.<br>Learn what you're missing.</h1>
+    <p class="lede">SkillSphere compares your skills against what a role actually asks for,
+      shows the gap honestly, and turns your own study material into a quiz that tells you
+      whether the gap is closing.</p>
+    <div class="cta-row">
+      <a class="btn" href="{{ url_for('profile') }}">Build my skill profile</a>
+      <a class="btn ghost" href="{{ url_for('demo_login') }}">Explore demo</a>
+    </div>
+    <p class="fine">Problem statement SIH26101 &nbsp;·&nbsp; Flask · MySQL · Gemini</p>
+  </div>
+
+  <figure class="skillmap-frame">
+    <figcaption>
+      <span class="map-role">Frontend Developer</span>
+      <span class="map-readiness">{{ preview.readiness }}% ready</span>
+    </figcaption>
+    <ul class="skillmap">
+      {% for row in preview.rows %}
+      <li>
+        <span class="s-name">{{ row.skill }}</span>
+        <span class="bar"><i style="width: {{ row.level }}%"></i></span>
+        <span class="s-val">{{ row.level }}%</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </figure>
+</section>
+
+<section class="features">
+  <h2>What the platform does</h2>
+  <div class="feature-grid">
+    <article><h3>Skill gap analysis</h3><p>Your skills, measured against the requirements of a target role, as a readiness score you can defend.</p></article>
+    <article><h3>Personalised learning</h3><p>A short ordered path built from your gaps — largest gap first, with the concepts that matter.</p></article>
+    <article><h3>AI-generated quizzes</h3><p>Upload a PDF or slide deck. Gemini reads it and writes five questions with explanations.</p></article>
+    <article><h3>Progress tracking</h3><p>Readiness, quiz history and your next best action in one place.</p></article>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}SkillSphere AI{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="{% block bodyclass %}app{% endblock %}">
+
+{% block chrome %}
+<aside class="sidebar">
+  <a class="brand" href="{{ url_for('index') }}">
+    <span class="brand-mark"></span>
+    <span>SkillSphere<em>AI</em></span>
+  </a>
+  <nav>
+    <a href="{{ url_for('index') }}" class="{{ 'on' if request.endpoint=='index' }}">Home</a>
+    <a href="{{ url_for('profile') }}" class="{{ 'on' if request.endpoint=='profile' }}">Profile</a>
+    <a href="{{ url_for('learning.problem_list') }}" class="{{ 'on' if request.endpoint in ['learning.problem_list','learning.problem','learning.problem_of_the_day'] }}">Problems</a>
+    <a href="{{ url_for('skill_gap') }}" class="{{ 'on' if request.endpoint=='skill_gap' }}">Skill gaps</a>
+    <a href="{{ url_for('recommendations') }}" class="{{ 'on' if request.endpoint=='recommendations' }}">Learning</a>
+    <a href="{{ url_for('upload') }}" class="{{ 'on' if request.endpoint in ['upload','quiz','results'] }}">AI quiz</a>
+    <a href="{{ url_for('assistant.page') }}" class="{{ 'on' if request.endpoint=='assistant.page' }}">Assistant</a>
+    <a href="{{ url_for('dashboard') }}" class="{{ 'on' if request.endpoint=='dashboard' }}">Dashboard</a>
+  </nav>
+  {% if gam %}
+  <a class="side-progress" href="{{ url_for('dashboard') }}" title="Your progress">
+    <span class="sp-top"><strong>Level {{ gam.level }}</strong><span>{{ gam.level_name }}</span></span>
+    <span class="bar"><i data-width="{{ gam.percent }}"></i></span>
+    <span class="sp-bot"><span>{{ gam.xp }} XP</span><span>{% if gam.streak %}🔥 {{ gam.streak }} day{{ '' if gam.streak == 1 else 's' }}{% else %}No streak yet{% endif %}</span></span>
+  </a>
+  {% endif %}
+  <div class="sidebar-foot">
+    {% if profile %}
+      <div class="who"><strong>{{ profile.name }}</strong><span>{{ profile.target_role }}</span></div>
+      <a class="quiet" href="{{ url_for('reset') }}">Sign out</a>
+    {% else %}
+      <a class="quiet" href="{{ url_for('demo_login') }}">Load demo profile</a>
+    {% endif %}
+    {% if not mysql_ok %}<p class="storage-note">Storing data in memory — MySQL is not connected.</p>{% endif %}
+  </div>
+</aside>
+{% endblock %}
+
+<main class="{% block mainclass %}sheet{% endblock %}">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flashes">
+      {% for category, text in messages %}<p class="flash {{ category }}">{{ text }}</p>{% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+{% if profile and request.endpoint != 'assistant.page' and request.endpoint != 'quiz' %}
+<button type="button" class="ask-fab" id="ask-open" aria-haspopup="dialog">Ask SkillSphere</button>
+<aside class="ask-drawer" id="ask-drawer" hidden aria-label="SkillSphere assistant">
+  <header><strong>SkillSphere Assistant</strong>
+    <button type="button" class="ask-close" id="ask-close" aria-label="Close">&times;</button></header>
+  {% include "_chat.html" %}
+</aside>
+{% endif %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
