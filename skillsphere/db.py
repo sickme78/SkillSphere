@@ -38,6 +38,7 @@ def get_conn():
         return conn
     except Error as exc:
         LAST_ERROR = str(exc)
+        print("MySQL connection error:", LAST_ERROR)
         return None
 
 
